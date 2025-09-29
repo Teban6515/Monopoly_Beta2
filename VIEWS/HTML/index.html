@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es" data-bs-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monopoly – Entrega Final</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../STYLES/CSS/styles.css" />
+</head>
+<body>
+  <header class="topbar border-bottom bg-white">
+    <div class="container-fluid d-flex justify-content-between align-items-center py-2">
+      <h1 class="logo m-0">MONOPOLY</h1>
+      <div class="d-flex gap-2">
+        <button id="btnLoad" class="btn btn-outline-secondary">Instrucciones</button>
+        <button id="btnShowRanking" class="btn btn-outline-primary">Ranking</button>
+        <button id="btnEndGame" class="btn btn-outline-danger">Finalizar Juego</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container-fluid py-3">
+    <div class="row g-3">
+      <div class="col-lg-8">
+        <section id="board" class="board" aria-label="Tablero de Monopoly"></section>
+      </div>
+      <div class="col-lg-4">
+        <aside class="sidebar d-flex flex-column gap-3">
+          <div class="card">
+            <div class="card-header fw-bold">Turno Actual</div>
+            <div class="card-body" id="currentPlayer"></div>
+          </div>
+          <div class="card">
+            <div class="card-header fw-bold">Jugadores</div>
+            <div class="card-body" id="playersPanel"></div>
+          </div>
+          <div class="card">
+            <div class="card-header fw-bold">Controles</div>
+            <div class="card-body controls">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <button id="btnRoll" class="btn btn-primary">🎲 Lanzar dados</button>
+                <div id="diceValues" class="fw-bold">—</div>
+              </div>
+              <details class="mb-2">
+                <summary>Modo prueba: dados manuales</summary>
+                <div class="d-flex gap-2 mt-2">
+                  <input type="number" id="dbgD1" min="1" max="6" class="form-control w-auto" placeholder="d1" />
+                  <input type="number" id="dbgD2" min="1" max="6" class="form-control w-auto" placeholder="d2" />
+                </div>
+              </details>
+              <div id="actionArea" class="d-flex flex-wrap gap-2"></div>
+              <button id="btnEndTurn" class="btn btn-outline-secondary mt-2">Terminar turno</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header fw-bold">Log</div>
+            <div class="card-body"><div id="log" class="log"></div></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Setup Modal -->
+  <dialog id="setupModal" class="modal-dialog">
+    <form method="dialog" id="setupForm" class="modal-content p-3 rounded-3 shadow">
+      <h2 class="h4">Configuración Inicial</h2>
+      <label class="form-label">Número de jugadores
+        <select id="numPlayers" required class="form-select w-auto">
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+      </label>
+      <div id="playersSetup" class="mt-3"></div>
+      <div class="text-end mt-3">
+        <button id="btnStart" value="start" class="btn btn-primary">Iniciar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Ranking Modal -->
+  <dialog id="rankingModal" class="modal-dialog">
+    <article class="modal-content p-3 rounded-3 shadow">
+      <header class="d-flex justify-content-between align-items-center">
+        <h2 class="h4 m-0">Ranking</h2>
+        <button onclick="this.closest('dialog').close()" class="btn btn-light">Cerrar</button>
+      </header>
+      <div id="rankingList" class="mt-3"></div>
+    </article>
+  </dialog>
+
+  <!-- Auction Modal -->
+  <dialog id="auctionModal" class="modal-dialog">
+    <article class="modal-content p-3 rounded-3 shadow">
+      <h2 class="h5">Subasta de <span id="aucProp"></span></h2>
+      <div class="row g-2 mt-2">
+        <div class="col-md-6"><label class="form-label">Ganador
+          <select id="aucWinner" class="form-select"></select></label></div>
+        <div class="col-md-6"><label class="form-label">Precio
+          <input type="number" id="aucPrice" class="form-control" value="100" min="0"></label></div>
+      </div>
+      <div class="text-end mt-3">
+        <button id="btnAucCancel" class="btn btn-light">Cancelar</button>
+        <button id="btnAucConfirm" class="btn btn-primary">Confirmar</button>
+      </div>
+    </article>
+  </dialog>
+
+  <!-- Trade Modal -->
+  <dialog id="tradeModal" class="modal-dialog">
+    <article class="modal-content p-3 rounded-3 shadow">
+      <h2 class="h5">Comercio</h2>
+      <div class="row g-2 mt-2">
+        <div class="col-md-4"><label class="form-label">De
+          <select id="trFrom" class="form-select" disabled></select></label></div>
+        <div class="col-md-4"><label class="form-label">Para
+          <select id="trTo" class="form-select"></select></label></div>
+        <div class="col-md-4"><label class="form-label">Propiedad
+          <select id="trProp" class="form-select"></select></label></div>
+      </div>
+      <div class="row g-2 mt-2">
+        <div class="col-md-6"><label class="form-label">Precio
+          <input type="number" id="trPrice" class="form-control" value="100" min="0"></label></div>
+      </div>
+      <div class="text-end mt-3">
+        <button id="btnTrCancel" class="btn btn-light">Cancelar</button>
+        <button id="btnTrConfirm" class="btn btn-primary">Confirmar</button>
+      </div>
+    </article>
+  </dialog>
+
+  <!-- Final Score Modal -->
+  <dialog id="finalModal" class="modal-dialog">
+    <article class="modal-content p-3 rounded-3 shadow">
+      <header class="d-flex justify-content-between align-items-center">
+        <h2 class="h4 m-0">Resultados de la partida</h2>
+        <button onclick="this.closest('dialog').close()" class="btn btn-light">Cerrar</button>
+      </header>
+      <div id="finalScores" class="mt-3"></div>
+    </article>
+  </dialog>
+
+  <script type="module" src="../../CONTROLLERS/JS/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

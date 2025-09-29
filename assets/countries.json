@@ -1,0 +1,50 @@
+[
+  {
+    "code": "CO",
+    "name": "Colombia"
+  },
+  {
+    "code": "US",
+    "name": "Estados Unidos"
+  },
+  {
+    "code": "MX",
+    "name": "México"
+  },
+  {
+    "code": "AR",
+    "name": "Argentina"
+  },
+  {
+    "code": "PE",
+    "name": "Perú"
+  },
+  {
+    "code": "BR",
+    "name": "Brasil"
+  },
+  {
+    "code": "CL",
+    "name": "Chile"
+  },
+  {
+    "code": "ES",
+    "name": "España"
+  },
+  {
+    "code": "FR",
+    "name": "Francia"
+  },
+  {
+    "code": "DE",
+    "name": "Alemania"
+  },
+  {
+    "code": "IT",
+    "name": "Italia"
+  },
+  {
+    "code": "VE",
+    "name": "Venezuela"
+  }
+]
