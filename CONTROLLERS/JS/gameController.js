@@ -126,24 +126,48 @@ export class GameController {
   }
 
   /** Ranking remoto (si existe). Muestra lista básica en modal. */
-  async showRanking() {
-    const list = $("#rankingList");
-    list.innerHTML = "Cargando...";
-    $("#rankingModal").showModal();
+  async showRanking(){
+  const list = $("#rankingList");
+  list.innerHTML = "Cargando...";
+  $("#rankingModal").showModal();
 
-    const data = await ApiService.tryFetch(API.RANKING);
-    if (!data) { list.textContent = "No fue posible obtener el ranking."; return; }
+  try {
+    const raw = await ApiService.strictGet(API.RANKING);
+
+    // Aquí usamos ENTRIES, no values
+    const data = raw.map(info => ({
+      nick: info.nick_name,
+      score: info.score,
+      country: (info.country_code || "XX").toUpperCase()
+    }));
+
+    // Orden descendente por score
+    data.sort((a,b)=> b.score - a.score);
 
     list.innerHTML = "";
-    data.forEach((row, i) => {
-      const el = document.createElement("div");
-      el.className = "d-flex align-items-center justify-content-between border rounded p-2 mb-2";
-      el.innerHTML = `<div class="fw-bold">#${i + 1}</div>
-        <div><img src="https://flagsapi.com/${row.country_code}/flat/64.png" width="32" height="24" class="rounded border" alt="bandera"> <strong>${row.nick_name}</strong></div>
-        <div class="fw-bold">${UI.money(row.score)}</div>`;
+    data.forEach((row,i)=>{
+      const el=document.createElement("div");
+      el.className="d-flex align-items-center justify-content-between border rounded p-2 mb-2";
+      el.innerHTML=`
+        <div class="fw-bold">#${i+1}</div>
+        <div>
+          <img src="https://flagsapi.com/${row.country}/flat/64.png"
+               width="32" height="24" class="rounded border" alt="bandera">
+          <strong>${row.nick}</strong>
+        </div>
+        <div class="fw-bold">${UI.money(row.score)}</div>
+      `;
       list.appendChild(el);
     });
+
+  } catch(err) {
+    console.error("Error obteniendo ranking:", err);
+    list.textContent = "No fue posible obtener el ranking del servidor.";
   }
+}
+
+
+
 
   /**
    * Tirar dados y aplicar reglas:

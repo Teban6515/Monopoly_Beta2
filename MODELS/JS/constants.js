@@ -8,8 +8,8 @@
 export const API = {
   BOARD: "http://127.0.0.1:5000/board",        // Devuelve JSON del tablero
   COUNTRIES: "http://127.0.0.1:5000/countries", // Devuelve JSON de países
-  RANKING: "http://127.0.0.1/ranking",         // Lista de mejores puntajes
-  SCORE: "http://127.0.0.1/score-recorder"     // Endpoint para registrar puntaje
+  RANKING: "http://127.0.0.1:5000/ranking",         // Lista de mejores puntajes
+  SCORE: "http://127.0.0.1:5000/score-recorder"     // Endpoint para registrar puntaje
 };
 
 /** Parámetros de regla de juego (ajustables). */
