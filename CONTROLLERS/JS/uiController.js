@@ -170,21 +170,52 @@ export const UI = {
   },
 
   /** Tarjeta que destaca quién juega ahora. */
-  renderCurrent(game){
-    const p=game.players[game.current];
-    $("#currentPlayer").innerHTML=`<div class="player-card card">
+renderCurrent(game){
+  const panel = document.getElementById("currentPlayer");
+  const p = game.players[game.current];
+
+  // HTML base de la tarjeta
+  panel.innerHTML = `
+    <div class="player-card card">
       <div class="card-body d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-2">
           <img src="${this.flag(p.country)}" width="32" height="24" class="rounded border" alt="Bandera ${p.country}">
           <div>
             <div class="fw-bold">${p.nick}</div>
             <div class="text-muted small">Turno actual</div>
+            <div id="propList"></div> <!-- Aquí irá la lista de propiedades -->
           </div>
         </div>
         <div class="chip" style="background:${p.color}" aria-label="Color de ficha"></div>
       </div>
-    </div>`;
+    </div>
+  `;
+
+  // 🔥 Ahora insertamos el desplegable según sus propiedades
+  const propList = document.getElementById("propList");
+
+  if (p.properties.length > 0) {
+    const select = document.createElement("select");
+    select.className = "form-select form-select-sm mt-1";
+    select.innerHTML = `
+      <option selected disabled>Propiedades</option>
+      ${p.properties.map(pr => {
+        const cell = game.board.cellById(pr.id);
+        const status = pr.mortgaged ? " (Hipotecada)" : "";
+        const houses = pr.houses ? ` _ ${pr.houses} casas` : "";
+        const hotel = pr.hotel ? " _ Hotel" : "";
+        return `<option>${cell.name}${status}${houses}${hotel}</option>`;
+      }).join("")}
+    `;
+    propList.appendChild(select);
+  } else {
+    const noProps = document.createElement("div");
+    noProps.className = "small text-muted";
+    noProps.textContent = "Sin propiedades";
+    propList.appendChild(noProps);
   }
+}
+
 };
 
 /** Mapea tipos del tablero a clases CSS para tematizar casillas. */
